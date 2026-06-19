@@ -119,7 +119,9 @@ eyJhbGciOiJub25lIiwidHlwIjoiSldTIn0.eyJsb2dpbiI6ImFkbWluIiwiaWF0IjoiMTUwNzc1NTU3
 
 > ⚠️ **Nota Crítica: El token termina obligatoriamente en un punto (.). Esto le indica al parser del backend que la sección de la firma existe, pero está completamente vacía.**
 > # Ejemplo correcto usando PyJWT moderno
-jwt.decode(token, secret_key, algorithms=["HS256"])
 
+```python
+jwt.decode(token, secret_key, algorithms=["HS256"])
+```
 
 
